@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LANChat</string>
+    <string name="welcome">欢迎来到局域网聊天室</string>
+    <string name="login">登录</string>
 </resources>
