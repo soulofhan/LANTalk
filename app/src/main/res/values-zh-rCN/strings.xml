@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LANChat</string>
+    <string name="welcome">欢迎来到不死聊天室</string>
+    <string name="link_start">连接</string>
+    <string name="main_hint">输入IP地址(无输入则连接默认IP)</string>
+</resources>
