@@ -3,26 +3,30 @@ package com.andeddo.lanchat;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.customViewGroup;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class MainActivity extends Activity {
-    private String IPAdress = "192.168.0.101";
-    private int PORT = 30000;
+    private final static String TAG = "-----MainActivity-----";
+    private final static String IPAddress = "192.168.0.101";
+    private final static int PORT = 30000;
 
     private Button btn_login;
-    private EditText et_ipAdress;
-
-    private String link_IP;
-
+    private EditText et_ipAddress;
+    private EditText et_port;
 
     customViewGroup view;
     WindowManager manager;
@@ -33,7 +37,20 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         init();
 
+        btn_login.setOnClickListener(myOnClickListener);
     }
+
+    View.OnClickListener myOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.btn_login:
+                    SocketLink mSocketLink = new SocketLink(getIpAddress(),getPort());
+                    mSocketLink.connect();
+
+            }
+        }
+    };
 
     @Override
     protected void onResume() {
@@ -43,13 +60,69 @@ public class MainActivity extends Activity {
 
     private void init() {
         btn_login = findViewById(R.id.btn_login);
-        et_ipAdress = findViewById(R.id.et_ipAdress);
+        et_ipAddress = findViewById(R.id.et_ipAddress);
+        et_port = findViewById(R.id.et_port);
     }
 
-    private String getIpAdress() {
-        return et_ipAdress.getText().toString();
+    //获取连接的ip地址
+    private String getIpAddress() {
+        String ipAddress = et_ipAddress.getText().toString();
+        if(!TextUtils.isEmpty(ipAddress)) {
+            Log.d(TAG, "getIpAddress: "+ipAddress);
+            if(isIP(ipAddress)) {
+                return ipAddress;
+            }
+        }
+        return IPAddress;
     }
 
+    /**
+     * 判断字符串是否为IP地址
+     * @param address 传入的IP地址
+     * @return 返回是否是IP地址 true或者false
+     */
+    public boolean isIP(String address) {
+        if(address.length() < 7 || address.length() > 15 || "".equals(address)) {
+            return false;
+        }
+        //判断IP格式和范围
+        String rexp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+
+        Pattern pat = Pattern.compile(rexp);
+
+        Matcher mat = pat.matcher(address);
+
+        return mat.find();
+    }
+
+    private int getPort() {
+        String stringPort = et_port.getText().toString();
+        if(!TextUtils.isEmpty(stringPort)) {
+            int port = Integer.parseInt(stringPort);
+            if(port<65536){
+                return port;
+            }
+        }
+        return PORT;
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        //自动隐藏通知栏与虚拟按键
+        if (hasFocus && Build.VERSION.SDK_INT >= 22) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
+    //禁止通知栏下拉
     private void disablePullNotificationTouch() {
         manager = ((WindowManager) getApplicationContext()
                 .getSystemService(Context.WINDOW_SERVICE));
@@ -65,21 +138,22 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 
         localLayoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        localLayoutParams.height = (int) (25 * getResources()
+        localLayoutParams.height = (int) (26 * getResources()
                 .getDisplayMetrics().scaledDensity);
         localLayoutParams.format = PixelFormat.RGBX_8888;
         view = new customViewGroup(this);
+        view.setBackgroundColor(getResources().getColor(R.color.White));
         manager.addView(view, localLayoutParams);
+    }
+
+    //允许下拉
+    private void allowDropDown() {
+        manager.removeView(view);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    //允许下拉
-    private void allowDropDown(){
-        manager.removeView(view);
     }
 
     @Override
