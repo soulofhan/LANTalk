@@ -2,6 +2,7 @@ package com.andeddo.lanchat;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,8 +22,8 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
     private final static String TAG = "-----MainActivity-----";
-    private final static String IPAddress = "192.168.0.101";
-    private final static int PORT = 30000;
+    private final static String IPAddress = "192.168.10.129";
+    private final static int PORT = 5963;
 
     private Button btn_login;
     private EditText et_ipAddress;
@@ -45,8 +46,11 @@ public class MainActivity extends Activity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_login:
-                    SocketLink mSocketLink = new SocketLink(getIpAddress(),getPort());
-                    mSocketLink.connect();
+                    SocketManager socketManager = new SocketManager(getIpAddress(),getPort());
+                    socketManager.start();
+//                    Intent intent = new Intent(MainActivity.this,ChatMsgActivity.class);
+//                    startActivity(intent);
+                    break;
 
             }
         }
@@ -76,6 +80,18 @@ public class MainActivity extends Activity {
         return IPAddress;
     }
 
+    //获取端口
+    private int getPort() {
+        String stringPort = et_port.getText().toString();
+        if(!TextUtils.isEmpty(stringPort)) {
+            int port = Integer.parseInt(stringPort);
+            if(port<65536){
+                return port;
+            }
+        }
+        return PORT;
+    }
+
     /**
      * 判断字符串是否为IP地址
      * @param address 传入的IP地址
@@ -93,17 +109,6 @@ public class MainActivity extends Activity {
         Matcher mat = pat.matcher(address);
 
         return mat.find();
-    }
-
-    private int getPort() {
-        String stringPort = et_port.getText().toString();
-        if(!TextUtils.isEmpty(stringPort)) {
-            int port = Integer.parseInt(stringPort);
-            if(port<65536){
-                return port;
-            }
-        }
-        return PORT;
     }
 
     @Override
@@ -157,8 +162,13 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        allowDropDown();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        allowDropDown();
     }
 }

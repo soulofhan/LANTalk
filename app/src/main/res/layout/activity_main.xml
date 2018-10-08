@@ -24,17 +24,17 @@
         android:ems="20"
         android:gravity="center_horizontal"
         android:hint="@string/main_hint"
-        android:inputType="textPersonName" />
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/et_port"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:ems="20"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10dp"
         android:hint="@string/main_hint_port"
-        android:inputType="textPersonName" />
+        android:inputType="text" />
 
     <Button
         android:id="@+id/btn_login"
