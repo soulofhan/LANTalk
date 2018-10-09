@@ -20,17 +20,16 @@ public class ChatMsgActivity extends Activity {
     private static final String TAG = "ChatMsgActivity";
 
     private ChatAdapter chatAdapter;
-    private ListView lv_chatMsg;
-    private List<PersonChat> personChats = new ArrayList<PersonChat>();
+    private static ListView lv_chatMsg;
+    private static List<PersonChat> personChats = new ArrayList<PersonChat>();
 
     @SuppressLint("HandlerLeak")
-    private Handler handler = new Handler() {
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             int what = msg.what;
             switch (what) {
                 case 1:
-                    Log.d(TAG, "handleMessage: "+lv_chatMsg);
                     lv_chatMsg.setSelection(personChats.size());
                     break;
                 default:
@@ -38,10 +37,6 @@ public class ChatMsgActivity extends Activity {
             }
         }
     };
-
-    public ChatMsgActivity(){
-        super();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +76,7 @@ public class ChatMsgActivity extends Activity {
      * @param name   传入发信人昵称
      * @param getMsg 传入收到的聊天内容
      */
-    public void setMsg(String name, String getMsg) {
+    public static void setMsg(String name, String getMsg) {
         Log.d(TAG, "setMsg: 84");
         PersonChat personChat = new PersonChat();
         personChat.setMeSend(false);
@@ -91,11 +86,12 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
     }
 
-    public void setTip(String  setMsg){
-        Log.d(TAG, "setTip: 94");
+    public static void setTip(String  setMsg){
+        Log.d(TAG, "setTip: 94" +lv_chatMsg);
+        String online = "当前在线：" + setMsg;
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
-        personChat.setChatMsg(setMsg);
+        personChat.setChatMsg(online);
         personChats.add(personChat);
         handler.sendEmptyMessage(1);
     }

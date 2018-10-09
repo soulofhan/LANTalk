@@ -29,13 +29,12 @@ public class SocketManager extends Thread{
         @Override
         public void handleMessage(Message msg) {
             int what = msg.what;
-            ChatMsgActivity chatMsgActivity = new ChatMsgActivity();
             switch (what){
                 case 1:
-                    chatMsgActivity.setMsg(msg.getData().getString("name"),msg.getData().getString("msg"));
+                    ChatMsgActivity.setMsg(msg.getData().getString("name"),msg.getData().getString("msg"));
                     break;
                 case 2:
-                    chatMsgActivity.setTip(msg.getData().getString("msg"));
+                    ChatMsgActivity.setTip(msg.getData().getString("msg"));
 
             }
         }

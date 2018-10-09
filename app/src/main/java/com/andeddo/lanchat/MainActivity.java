@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
     private final static String TAG = "-----MainActivity-----";
-    private final static String IPAddress = "192.168.10.129";
+    private final static String IPAddress = "192.168.31.158";
     private final static int PORT = 5963;
 
     private Button btn_login;
