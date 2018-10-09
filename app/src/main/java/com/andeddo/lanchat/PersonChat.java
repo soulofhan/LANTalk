@@ -5,6 +5,7 @@ class PersonChat {
     private String name;        //聊天昵称
     private String chatMsg;     //聊天内容
     private boolean isMeSend;   //是否自己发送
+    private boolean isTip;      //是否是提示信息
 
     public int getId(){
         return id;
@@ -40,6 +41,18 @@ class PersonChat {
      */
     public void setChatMsg(String chatMessage) {
         this.chatMsg = chatMessage;
+    }
+
+    public boolean isTip(){
+        return isTip;
+    }
+
+    /**
+     * 设置是否为提示消息，用于提示用户退出与进入
+     * @param isTip 提示消息
+     */
+    public void setTip(boolean isTip){
+        this.isTip = isTip;
     }
 
     public boolean isMeSend() {

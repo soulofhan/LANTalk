@@ -46,10 +46,12 @@ public class MainActivity extends Activity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_login:
+                    //点击开始连接服务器
                     SocketManager socketManager = new SocketManager(getIpAddress(),getPort());
                     socketManager.start();
-//                    Intent intent = new Intent(MainActivity.this,ChatMsgActivity.class);
-//                    startActivity(intent);
+                    Intent intent = new Intent(MainActivity.this,ChatMsgActivity.class);
+                    startActivity(intent);
+
                     break;
 
             }
