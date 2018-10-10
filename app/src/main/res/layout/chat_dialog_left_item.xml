@@ -19,6 +19,6 @@
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:background="@drawable/acn"
-        android:text="123456" />
+        android:text="@string/tv_default" />
 
 </LinearLayout>

@@ -86,12 +86,22 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
     }
 
-    public static void setTip(String  setMsg){
-        Log.d(TAG, "setTip: 94" +lv_chatMsg);
+    public static void setTip(String setMsg) {
+        Log.d(TAG, "setTip: 94");
         String online = "当前在线：" + setMsg;
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
         personChat.setChatMsg(online);
+        personChats.add(personChat);
+        handler.sendEmptyMessage(1);
+    }
+
+    public static void setDis(String setDis) {
+        Log.d(TAG, "setDis: 100");
+        String dis = setDis + "退出了房间";
+        PersonChat personChat = new PersonChat();
+        personChat.setTip(true);
+        personChat.setChatMsg(dis);
         personChats.add(personChat);
         handler.sendEmptyMessage(1);
     }

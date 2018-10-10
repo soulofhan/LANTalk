@@ -4,4 +4,5 @@
     <string name="link_start">link</string>
     <string name="welcome">welcome andeddo talking room</string>
     <string name="main_hint_port">input port(not input was use default)</string>
+    <string name="tv_default">TextView</string>
 </resources>

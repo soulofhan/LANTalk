@@ -5,4 +5,5 @@
     <string name="link_start">连接</string>
     <string name="main_hint">输入IP地址(无输入则连接默认IP)</string>
     <string name="main_hint_port">输入连接端口号(无输入则使用默认)</string>
+    <string name="tv_default">文本框</string>
 </resources>

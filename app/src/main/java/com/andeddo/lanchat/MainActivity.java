@@ -22,12 +22,6 @@ import java.util.regex.Pattern;
 
 public class MainActivity extends Activity {
     private final static String TAG = "-----MainActivity-----";
-    private final static String IPAddress = "192.168.31.158";
-    private final static int PORT = 5963;
-
-    private Button btn_login;
-    private EditText et_ipAddress;
-    private EditText et_port;
 
     customViewGroup view;
     WindowManager manager;
@@ -36,7 +30,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        init();
+        Button btn_login = findViewById(R.id.btn_login);
 
         btn_login.setOnClickListener(myOnClickListener);
     }
@@ -47,11 +41,10 @@ public class MainActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btn_login:
                     //点击开始连接服务器
-                    SocketManager socketManager = new SocketManager(getIpAddress(),getPort());
+                    SocketManager socketManager = new SocketManager();
                     socketManager.start();
-                    Intent intent = new Intent(MainActivity.this,ChatMsgActivity.class);
-                    startActivity(intent);
-
+//                    Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
+//                    startActivity(intent);
                     break;
 
             }
@@ -64,58 +57,10 @@ public class MainActivity extends Activity {
         disablePullNotificationTouch();
     }
 
-    private void init() {
-        btn_login = findViewById(R.id.btn_login);
-        et_ipAddress = findViewById(R.id.et_ipAddress);
-        et_port = findViewById(R.id.et_port);
-    }
-
-    //获取连接的ip地址
-    private String getIpAddress() {
-        String ipAddress = et_ipAddress.getText().toString();
-        if(!TextUtils.isEmpty(ipAddress)) {
-            Log.d(TAG, "getIpAddress: "+ipAddress);
-            if(isIP(ipAddress)) {
-                return ipAddress;
-            }
-        }
-        return IPAddress;
-    }
-
-    //获取端口
-    private int getPort() {
-        String stringPort = et_port.getText().toString();
-        if(!TextUtils.isEmpty(stringPort)) {
-            int port = Integer.parseInt(stringPort);
-            if(port<65536){
-                return port;
-            }
-        }
-        return PORT;
-    }
-
-    /**
-     * 判断字符串是否为IP地址
-     * @param address 传入的IP地址
-     * @return 返回是否是IP地址 true或者false
-     */
-    public boolean isIP(String address) {
-        if(address.length() < 7 || address.length() > 15 || "".equals(address)) {
-            return false;
-        }
-        //判断IP格式和范围
-        String rexp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
-
-        Pattern pat = Pattern.compile(rexp);
-
-        Matcher mat = pat.matcher(address);
-
-        return mat.find();
-    }
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        Log.d(TAG, "onWindowFocusChanged: 63");
         //自动隐藏通知栏与虚拟按键
         if (hasFocus && Build.VERSION.SDK_INT >= 22) {
             View decorView = getWindow().getDecorView();
@@ -129,8 +74,13 @@ public class MainActivity extends Activity {
         }
     }
 
+    public static void showDialog(String online){
+
+    }
+
     //禁止通知栏下拉
     private void disablePullNotificationTouch() {
+        Log.d(TAG, "disablePullNotificationTouch: 78");
         manager = ((WindowManager) getApplicationContext()
                 .getSystemService(Context.WINDOW_SERVICE));
         WindowManager.LayoutParams localLayoutParams = new WindowManager.LayoutParams();

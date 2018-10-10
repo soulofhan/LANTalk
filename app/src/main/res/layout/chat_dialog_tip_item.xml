@@ -8,6 +8,7 @@
         android:id="@+id/tv_chat_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textColor="@color/Gray" />
+        android:text="@string/tv_default"
+        android:textColor="@color/Gray"
+        android:textSize="10sp" />
 </LinearLayout>
