@@ -54,7 +54,7 @@ public class ChatMsgActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
-                    Toast.makeText(ChatMsgActivity.this, "发送内容不能为空", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_LONG).show();
                     return;
                 }
                 PersonChat personChat = new PersonChat();
@@ -98,7 +98,7 @@ public class ChatMsgActivity extends Activity {
 
     public static void setDis(String setDis) {
         Log.d(TAG, "setDis: 100");
-        String dis = setDis + "退出了房间";
+        String dis = setDis + "退出了房间" ;
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
         personChat.setChatMsg(dis);

@@ -3,7 +3,6 @@ package com.andeddo.lanchat.unit;
 import android.util.Log;
 
 import com.andeddo.lanchat.ChatMsgActivity;
-import com.andeddo.lanchat.MainActivity;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +13,8 @@ import java.util.regex.Pattern;
  */
 public class MsgHandle {
     private static final String TAG = "MsgHandle";
+
+    private static String online = "";
 
     /**
      * 正则表达式消息处理
@@ -88,7 +89,15 @@ public class MsgHandle {
         Pattern pattern = Pattern.compile(dec);
         Matcher matcher = pattern.matcher(decide);
         if (matcher.find()) {
-            MainActivity.showDialog(matcher.group(1));
+            setOnline(matcher.group(1));
         }
+    }
+
+    private void setOnline(String online) {
+        MsgHandle.online = online;
+    }
+
+    public static String getOnline() {
+        return online;
     }
 }

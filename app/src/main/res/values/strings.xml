@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">LANChat</string>
-    <string name="main_hint">input IP adress(not input was use default)</string>
-    <string name="link_start">link</string>
-    <string name="welcome">welcome andeddo talking room</string>
-    <string name="main_hint_port">input port(not input was use default)</string>
+    <string name="link_start">Log in</string>
+    <string name="welcome">Welcome andeddo talking room</string>
     <string name="tv_default">TextView</string>
+    <string name="dialog">Current online number: %1$s person</string>
+    <string name="et_dialog">Please decide chat nickname</string>
+    <string name="main_welcome">Welcome to the chat room</string>
+    <string name="nickname">Chat nickname can\'t be empty</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="not_empty">Sending content cannot be empty</string>
 </resources>

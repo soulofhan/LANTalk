@@ -2,8 +2,13 @@
 <resources>
     <string name="app_name">局域网聊天</string>
     <string name="welcome">欢迎来到不死聊天室</string>
-    <string name="link_start">连接</string>
-    <string name="main_hint">输入IP地址(无输入则连接默认IP)</string>
-    <string name="main_hint_port">输入连接端口号(无输入则使用默认)</string>
+    <string name="link_start">登录</string>
     <string name="tv_default">文本框</string>
+    <string name="dialog">当前在线人数： %1$s 人</string>
+    <string name="et_dialog">请确定聊天昵称</string>
+    <string name="main_welcome">欢迎进入聊天室</string>
+    <string name="nickname">聊天昵称不能为空</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="not_empty">发送内容不能为空</string>
 </resources>
