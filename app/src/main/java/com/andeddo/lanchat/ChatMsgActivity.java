@@ -13,11 +13,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.andeddo.lanchat.unit.MsgHandle;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChatMsgActivity extends Activity {
     private static final String TAG = "ChatMsgActivity";
+    private static boolean isFocus = false;
 
     private ChatAdapter chatAdapter;
     private static ListView lv_chatMsg;
@@ -65,7 +68,6 @@ public class ChatMsgActivity extends Activity {
                 handler.sendEmptyMessage(1);
                 SocketManager.sendMessage(et_getMsg.getText().toString());
                 et_getMsg.setText("");
-
             }
         });
     }
@@ -86,9 +88,19 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
     }
 
+    /**
+     * 显示当前在线人昵称
+     *
+     * @param setMsg 在线人昵称
+     */
     public static void setTip(String setMsg) {
-        Log.d(TAG, "setTip: 94");
-        String online = "当前在线：" + setMsg;
+        Log.d(TAG, "setTip: 94" + isFocus);
+        String online;
+        if(isFocus) {
+            online = "当前在线：" + setMsg;
+        }else{
+            online = "当前在线: " + MsgHandle.getTip();
+        }
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
         personChat.setChatMsg(online);
@@ -96,9 +108,14 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
     }
 
+    /**
+     * 有人退出聊天室提示
+     *
+     * @param setDis 退出人昵称
+     */
     public static void setDis(String setDis) {
         Log.d(TAG, "setDis: 100");
-        String dis = setDis + "退出了房间" ;
+        String dis = setDis + "退出了房间";
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
         personChat.setChatMsg(dis);

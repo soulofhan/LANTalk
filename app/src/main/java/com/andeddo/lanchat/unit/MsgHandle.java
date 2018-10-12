@@ -15,6 +15,7 @@ public class MsgHandle {
     private static final String TAG = "MsgHandle";
 
     private static String online = "";
+    private static String tip = "";
 
     /**
      * 正则表达式消息处理
@@ -22,7 +23,7 @@ public class MsgHandle {
      * @param info 传入接收到的需要处理的消息
      */
     public static void msgHandle(String info) {
-        Log.d(TAG, "msgHandle: " + info);
+        Log.d(TAG, "msgHandle 需要处理的数据为：" + info);
         MsgHandle msgHandle = new MsgHandle();
         String top = "";
         String p = "\\[(.*)\\]:\\[(.*)\\]";
@@ -55,22 +56,44 @@ public class MsgHandle {
      */
     private void msgInfo(String msgInfo) {
         Log.d(TAG, "msgInfo: ");
-        String p = "\\[(Msg)\\]:\\[(.*),(.*)\\]";
+        String p = "\\[Msg\\]:\\[(.*),(.*)\\]";
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(msgInfo);
         if (matcher.find()) {
+            Log.d(TAG, "msgInfo: " + matcher.group(1) + "2: " + matcher.group(2));
             ChatMsgActivity.setMsg(matcher.group(1), matcher.group(2));
         }
     }
 
     private void tipInfo(String tip) {
-        Log.d(TAG, "tipInfo: ");
+        Log.d(TAG, "tipInfo: " + tip);
         String pTip = "\\[Tip]:\\[(.*)\\]";
         Pattern pattern = Pattern.compile(pTip);
-        Matcher matcher = pattern.matcher(tip);
+        final Matcher matcher = pattern.matcher(tip);
         if (matcher.find()) {
-            ChatMsgActivity.setTip(matcher.group(1));
+            final String runTip = matcher.group(1);
+            setTip(runTip);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Thread.sleep(1000); // 休眠1秒
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    ChatMsgActivity.setTip(runTip);
+                }
+            }).start();
         }
+    }
+
+    private void setTip(String tip){
+        MsgHandle.tip = tip;
+    }
+
+    public static String getTip(){
+        return tip;
     }
 
     private void dis(String unLink) {
