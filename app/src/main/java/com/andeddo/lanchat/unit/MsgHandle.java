@@ -26,7 +26,7 @@ public class MsgHandle {
         Log.d(TAG, "msgHandle 需要处理的数据为：" + info);
         MsgHandle msgHandle = new MsgHandle();
         String top = "";
-        String p = "\\[(.*)\\]:\\[(.*)\\]";
+        String p = "\\[(.*)\\]:";
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(info);
         if (matcher.find()) {
@@ -55,7 +55,7 @@ public class MsgHandle {
      * @param msgInfo 传入接收到的聊天内容消息
      */
     private void msgInfo(String msgInfo) {
-        Log.d(TAG, "msgInfo: ");
+        Log.d(TAG, "msgInfo: " + msgInfo);
         String p = "\\[Msg\\]:\\[(.*),(.*)\\]";
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(msgInfo);
@@ -65,6 +65,7 @@ public class MsgHandle {
         }
     }
 
+    //显示当前在线人员
     private void tipInfo(String tip) {
         Log.d(TAG, "tipInfo: " + tip);
         String pTip = "\\[Tip]:\\[(.*)\\]";
@@ -92,12 +93,14 @@ public class MsgHandle {
         MsgHandle.tip = tip;
     }
 
+    //当前在线人员名字
     public static String getTip(){
         return tip;
     }
 
+    //断开连接
     private void dis(String unLink) {
-        Log.d(TAG, "dis: ");
+        Log.d(TAG, "dis: " + unLink);
         String dis = "\\[dis\\]:\\[(.*)\\]";
         Pattern pattern = Pattern.compile(dis);
         Matcher matcher = pattern.matcher(unLink);
@@ -106,8 +109,9 @@ public class MsgHandle {
         }
     }
 
+    //首次进入初始化名字
     private void decide(String decide) {
-        Log.d(TAG, "decide: ");
+        Log.d(TAG, "decide: " + decide);
         String dec = "\\[decide\\]:\\[(.*)\\]";
         Pattern pattern = Pattern.compile(dec);
         Matcher matcher = pattern.matcher(decide);
@@ -120,6 +124,7 @@ public class MsgHandle {
         MsgHandle.online = online;
     }
 
+    //获取在线人数
     public static String getOnline() {
         return online;
     }

@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ChatMsgActivity">
 
+    <com.hjq.bar.TitleBar
+        style="@style/TitleBarTransparentStyle"
+        android:id="@+id/chat_titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/shape_gradient"
+        app:size_left="18dp"
+        app:size_title="18dp"
+        app:size_right="18dp"
+        app:title="未命名的聊天室"
+        app:title_left="退出"
+        app:title_right="修改" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
         android:layout_weight="1"
-        android:background="@drawable/rbtn_normal_background"
+        android:background="@color/Transparent"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -29,6 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <EditText
@@ -36,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/rbtn_normal_background"
+            android:background="@color/Transparent"
             android:inputType="none|text"
             android:padding="8dp"
             android:textSize="14sp" />

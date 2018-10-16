@@ -14,6 +14,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
+import com.hjq.bar.OnTitleBarListener;
+import com.hjq.bar.TitleBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.List;
 public class ChatMsgActivity extends Activity {
     private static final String TAG = "ChatMsgActivity";
     private static boolean isFocus = false;
+
+    private TitleBar chat_titleBar;
 
     private ChatAdapter chatAdapter;
     private static ListView lv_chatMsg;
@@ -45,6 +49,24 @@ public class ChatMsgActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_msg);
+        chat_titleBar = findViewById(R.id.chat_titleBar);
+        chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
+            @Override
+            public void onLeftClick(View v) {
+                SocketManager.sendMessage("disconnect");
+
+            }
+
+            @Override
+            public void onTitleClick(View v) {
+
+            }
+
+            @Override
+            public void onRightClick(View v) {
+
+            }
+        });
 
         lv_chatMsg = findViewById(R.id.lv_chatMsg);
         Button btn_sendMsg = findViewById(R.id.btn_sendMsg);
@@ -57,7 +79,7 @@ public class ChatMsgActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
-                    Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 PersonChat personChat = new PersonChat();
@@ -121,6 +143,14 @@ public class ChatMsgActivity extends Activity {
         personChat.setChatMsg(dis);
         personChats.add(personChat);
         handler.sendEmptyMessage(1);
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if(hasFocus){
+            isFocus = true;
+        }
     }
 
 }
