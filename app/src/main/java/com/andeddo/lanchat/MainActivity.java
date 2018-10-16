@@ -83,6 +83,7 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
                 startActivity(intent);
                 SocketManager.sendMessage(decideName);
+                dialog.dismiss();
             }
         });
 

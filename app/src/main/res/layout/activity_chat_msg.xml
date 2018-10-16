@@ -16,9 +16,9 @@
         app:size_left="18dp"
         app:size_title="18dp"
         app:size_right="18dp"
-        app:title="未命名的聊天室"
-        app:title_left="退出"
-        app:title_right="修改" />
+        app:title="@string/welcome"
+        app:title_left="@string/quit"
+        app:title_right="@string/modify" />
 
     <LinearLayout
         android:layout_width="match_parent"

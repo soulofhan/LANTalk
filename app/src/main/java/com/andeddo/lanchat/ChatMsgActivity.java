@@ -54,7 +54,7 @@ public class ChatMsgActivity extends Activity {
             @Override
             public void onLeftClick(View v) {
                 SocketManager.sendMessage("disconnect");
-
+                finish();
             }
 
             @Override
@@ -153,4 +153,9 @@ public class ChatMsgActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: 退出ChatMsgActivity界面");
+        super.onDestroy();
+    }
 }

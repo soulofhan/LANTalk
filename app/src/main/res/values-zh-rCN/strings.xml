@@ -11,4 +11,6 @@
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="not_empty">发送内容不能为空</string>
+    <string name="quit">退出</string>
+    <string name="modify">修改</string>
 </resources>
