@@ -1,7 +1,6 @@
 package com.andeddo.lanchat;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
 
@@ -10,26 +9,33 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class SocketManager extends Thread {
     private static final String TAG = "SocketManager";
     private static final String disConnect = "disconnect";
 
-//    private final static String IPAddress = "192.168.31.158";
-    private final static String IPAddress = "192.168.10.129";
-    private final static int PORT = 5963;
+    private static String IPAddress = "192.168.31.158";
+//    private final static String IPAddress = "192.168.10.129";
+    private final static int PORT = 5962;
 
     private Socket socket;
     private BufferedReader bufferedReader;
     private static BufferedWriter bufferedWriter;
-    String disconnect = "connect";
-    static boolean cut = false;
+    private String disconnect = "connect";
+    private static boolean cut = false;
 
     @Override
     public void run() {
         try {
-            socket = new Socket(IPAddress, PORT);
+            Log.d(TAG, "run: 开始链接socket服务器");
+            socket = new Socket(IPAddress,PORT);
+            socket = new Socket();
+            SocketAddress endpoint = new InetSocketAddress(IPAddress,PORT);
+            socket.connect(endpoint,10000);
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
@@ -47,9 +53,12 @@ public class SocketManager extends Thread {
                 }
             }
             Log.d(TAG, "run: 退出消息接收阻塞...");
+        } catch (ConnectException c) {
+            Log.d(TAG, "60 连接服务器超时" + c);
+            IPAddress = "192.168.10.129";
+            run();
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d(TAG, "run: 50" + e);
         } finally {
             if (disConnect.equals(disconnect)) {
                 try {
