@@ -3,26 +3,29 @@ package com.andeddo.lanchat;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
 
 
 public class MainActivity extends Activity {
+    private static final String TAG = "MainActivity";
 
     View dialogView;
     long firstPressedTime = 0;
+    ProgressDialog waitingDialog;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -31,10 +34,17 @@ public class MainActivity extends Activity {
             int what = msg.what;
             switch (what) {
                 case 1:
-                    TextView tv = dialogView.findViewById(R.id.tv_onLink);
-                    String online = MsgHandle.getOnline();
-                    tv.setText(String.format(getResources().getString(R.string.dialog), online));
-                    mHandler.sendEmptyMessageDelayed(1, 1000);
+                    if ("success".equals(MsgHandle.getSuccess())) {
+                        waitingDialog.dismiss();
+                        Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
+                        startActivity(intent);
+                    } else if ("failure".equals(MsgHandle.getSuccess())) {
+                        waitingDialog.dismiss();
+                        Toast.makeText(MainActivity.this, getXmlString(R.string.existed), Toast.LENGTH_SHORT).show();
+                    } else {
+                        mHandler.sendEmptyMessage(1);
+                    }
+                    break;
             }
         }
     };
@@ -58,7 +68,6 @@ public class MainActivity extends Activity {
                     SocketManager socketManager = new SocketManager();
                     socketManager.start();
                     showMyDialog();
-                    mHandler.sendEmptyMessage(1);
                     break;
             }
         }
@@ -70,7 +79,8 @@ public class MainActivity extends Activity {
         final EditText userName = dialogView.findViewById(R.id.et_userName);
         AlertDialog.Builder mAlertDialog = new AlertDialog.Builder(this);
         mAlertDialog.setIcon(R.mipmap.ic_launcher_round);
-        mAlertDialog.setTitle(getXmlString(R.string.main_welcome));
+        String title = getXmlString(R.string.main_welcome);
+        mAlertDialog.setTitle(title);
         mAlertDialog.setView(dialogView);
         mAlertDialog.setPositiveButton(getXmlString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
@@ -80,9 +90,9 @@ public class MainActivity extends Activity {
                     Toast.makeText(MainActivity.this, getXmlString(R.string.nickname), Toast.LENGTH_LONG).show();
                     return;
                 }
-                Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
-                startActivity(intent);
                 SocketManager.sendMessage(decideName);
+                showWaitingDialog();
+                mHandler.sendEmptyMessage(1);
                 dialog.dismiss();
             }
         });
@@ -94,7 +104,22 @@ public class MainActivity extends Activity {
             }
         });
         mAlertDialog.setCancelable(false);
+        mAlertDialog.create();
         mAlertDialog.show();
+    }
+
+    public void showWaitingDialog() {
+        /* 等待Dialog具有屏蔽其他控件的交互能力
+         * @setCancelable 为使屏幕不可点击，设置为不可取消(false)
+         * 下载等事件完成后，主动调用函数关闭该Dialog
+         */
+        waitingDialog = new ProgressDialog(MainActivity.this);
+        waitingDialog.setTitle("等待服务器连接");
+        waitingDialog.setMessage("正在连接服务器...");
+        waitingDialog.setIndeterminate(true);
+        waitingDialog.setCancelable(false);
+        waitingDialog.create();
+        waitingDialog.show();
     }
 
     /**
@@ -104,7 +129,9 @@ public class MainActivity extends Activity {
      * @return 返回获取到的字符串
      */
     private String getXmlString(int stringId) {
-        return getResources().getString(stringId);
+        String value = getResources().getString(stringId);
+        Log.d(TAG, "getXmlString: " + value);
+        return value;
     }
 
     @Override
@@ -112,7 +139,7 @@ public class MainActivity extends Activity {
         if (System.currentTimeMillis() - firstPressedTime < 2000) {
             super.onBackPressed();
         } else {
-            Toast.makeText(MainActivity.this, "再按一次退出", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, getXmlString(R.string.again), Toast.LENGTH_SHORT).show();
             firstPressedTime = System.currentTimeMillis();
         }
     }

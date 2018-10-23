@@ -12,4 +12,6 @@
     <string name="not_empty">Sending content cannot be empty</string>
     <string name="quit">quit</string>
     <string name="modify">modify</string>
+    <string name="again">Press again to exit</string>
+    <string name="existed">Username already exists, please re-enter</string>
 </resources>

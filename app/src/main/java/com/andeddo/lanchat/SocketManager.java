@@ -1,6 +1,7 @@
 package com.andeddo.lanchat;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
 
@@ -22,20 +23,23 @@ public class SocketManager extends Thread {
     private Socket socket;
     private BufferedReader bufferedReader;
     private static BufferedWriter bufferedWriter;
+    String disconnect = "connect";
+    static boolean cut = false;
 
     @Override
     public void run() {
-        String disconnect = "connect";
         try {
             socket = new Socket(IPAddress, PORT);
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 
+            sendMessage("1");
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                Log.d(TAG, "run: 接收到的数据为 : " + line);
+                Log.d(TAG, "run: 接收到的数据为：" + line);
                 if (line.equals(disConnect)) {
                     disconnect = disConnect;
+                    cut = true;
                     break;
                 } else {
                     // 将接收到的信息进行分类并显示
@@ -45,7 +49,7 @@ public class SocketManager extends Thread {
             Log.d(TAG, "run: 退出消息接收阻塞...");
         } catch (IOException e) {
             e.printStackTrace();
-            Log.d(TAG, "run: 65" + e);
+            Log.d(TAG, "run: 50" + e);
         } finally {
             if (disConnect.equals(disconnect)) {
                 try {
@@ -65,7 +69,7 @@ public class SocketManager extends Thread {
      * @param msg 聊天内容
      */
     public static void sendMessage(String msg) {
-        Log.d(TAG, "sendMessage: 80 " + msg);
+        Log.d(TAG, "sendMessage: 70 " + msg);
         if (bufferedWriter != null) {
             try {
                 bufferedWriter.write(msg);
@@ -74,6 +78,10 @@ public class SocketManager extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static boolean getCut(){
+        return cut;
     }
 
 }

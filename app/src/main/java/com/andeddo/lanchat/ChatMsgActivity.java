@@ -2,12 +2,14 @@ package com.andeddo.lanchat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -24,10 +26,11 @@ public class ChatMsgActivity extends Activity {
     private static final String TAG = "ChatMsgActivity";
     private static boolean isFocus = false;
 
-    private TitleBar chat_titleBar;
+    private static TitleBar chat_titleBar;
+    private static ListView lv_chatMsg;
 
     private ChatAdapter chatAdapter;
-    private static ListView lv_chatMsg;
+    ProgressDialog waitingDialog;
     private static List<PersonChat> personChats = new ArrayList<PersonChat>();
 
     @SuppressLint("HandlerLeak")
@@ -38,6 +41,10 @@ public class ChatMsgActivity extends Activity {
             switch (what) {
                 case 1:
                     lv_chatMsg.setSelection(personChats.size());
+                    handler.sendEmptyMessage(2);
+                    break;
+                case 2:
+                    chat_titleBar.setRightTitle("在线:" + MsgHandle.getOnline());
                     break;
                 default:
                     break;
@@ -49,12 +56,22 @@ public class ChatMsgActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_msg);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
         chat_titleBar = findViewById(R.id.chat_titleBar);
         chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
             public void onLeftClick(View v) {
+
                 SocketManager.sendMessage("disconnect");
-                finish();
+                showWaitingDialog();
+                while (true){
+                    if(SocketManager.getCut()){
+                        waitingDialog.dismiss();
+                        Toast.makeText(getApplicationContext(),"已断开与服务器的连接",Toast.LENGTH_LONG).show();
+                        finish();
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -71,9 +88,6 @@ public class ChatMsgActivity extends Activity {
         lv_chatMsg = findViewById(R.id.lv_chatMsg);
         Button btn_sendMsg = findViewById(R.id.btn_sendMsg);
         final EditText et_getMsg = findViewById(R.id.et_getMsg);
-
-        chatAdapter = new ChatAdapter(this, personChats);
-        lv_chatMsg.setAdapter(chatAdapter);
 
         btn_sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +106,13 @@ public class ChatMsgActivity extends Activity {
                 et_getMsg.setText("");
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chatAdapter = new ChatAdapter(this, personChats);
+        lv_chatMsg.setAdapter(chatAdapter);
     }
 
     /**
@@ -118,9 +139,9 @@ public class ChatMsgActivity extends Activity {
     public static void setTip(String setMsg) {
         Log.d(TAG, "setTip: 94" + isFocus);
         String online;
-        if(isFocus) {
+        if (isFocus) {
             online = "当前在线：" + setMsg;
-        }else{
+        } else {
             online = "当前在线: " + MsgHandle.getTip();
         }
         PersonChat personChat = new PersonChat();
@@ -135,9 +156,17 @@ public class ChatMsgActivity extends Activity {
      *
      * @param setDis 退出人昵称
      */
-    public static void setDis(String setDis) {
+    public static void setDis(int what, String setDis) {
         Log.d(TAG, "setDis: 100");
-        String dis = setDis + "退出了房间";
+        String dis = "";
+        switch (what) {
+            case 1:
+                dis = setDis + " 退出了房间";
+                break;
+            case 2:
+                dis = setDis + " 进入了房间";
+                break;
+        }
         PersonChat personChat = new PersonChat();
         personChat.setTip(true);
         personChat.setChatMsg(dis);
@@ -145,10 +174,24 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
     }
 
+    public void showWaitingDialog() {
+        /* 等待Dialog具有屏蔽其他控件的交互能力
+         * @setCancelable 为使屏幕不可点击，设置为不可取消(false)
+         * 下载等事件完成后，主动调用函数关闭该Dialog
+         */
+        waitingDialog = new ProgressDialog(ChatMsgActivity.this);
+        waitingDialog.setTitle("我是一个等待Dialog");
+        waitingDialog.setMessage("正在断开与服务器的连接");
+        waitingDialog.setIndeterminate(true);
+        waitingDialog.setCancelable(false);
+        waitingDialog.create();
+        waitingDialog.show();
+    }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if(hasFocus){
+        if (hasFocus) {
             isFocus = true;
         }
     }

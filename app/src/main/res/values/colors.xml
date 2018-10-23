@@ -6,4 +6,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="Gray">#988f92</color>
+    <color name="Faiz_gray">#dcdcdc</color>
+    <color name="black">#6e6e6e</color>
 </resources>

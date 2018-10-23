@@ -16,6 +16,7 @@ public class MsgHandle {
 
     private static String online = "";
     private static String tip = "";
+    private static String success="pass";
 
     /**
      * 正则表达式消息处理
@@ -31,6 +32,7 @@ public class MsgHandle {
         Matcher matcher = pattern.matcher(info);
         if (matcher.find()) {
             top = matcher.group(1);
+            Log.d(TAG, "msgHandle: 截取的报头信息：" + top);
         }
 
         if ("Msg".equals(top)) {
@@ -39,13 +41,20 @@ public class MsgHandle {
         } else if ("Tip".equals(top)) {
             msgHandle.tipInfo(info);
 
-        } else if ("dis".equals(top)) {
+        } else if ("Dis".equals(top)) {
             msgHandle.dis(info);
 
         } else if ("decide".equals(top)) {
             msgHandle.decide(info);
-        } else {
-            Log.d(TAG, "msgHandle: 46 " + info);
+
+        }else if ("enter".equals(top)) {
+            msgHandle.enter(info);
+
+        }else if("correct".equals(top)){
+            msgHandle.success(info);
+
+        }else {
+            Log.d(TAG, "msgHandle: 52 " + info);
         }
     }
 
@@ -60,7 +69,6 @@ public class MsgHandle {
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(msgInfo);
         if (matcher.find()) {
-            Log.d(TAG, "msgInfo: " + matcher.group(1) + "2: " + matcher.group(2));
             ChatMsgActivity.setMsg(matcher.group(1), matcher.group(2));
         }
     }
@@ -79,7 +87,7 @@ public class MsgHandle {
                 public void run() {
 
                     try {
-                        Thread.sleep(1000); // 休眠1秒
+                        Thread.sleep(1000); // 休眠0.5秒
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -89,23 +97,14 @@ public class MsgHandle {
         }
     }
 
-    private void setTip(String tip){
-        MsgHandle.tip = tip;
-    }
-
-    //当前在线人员名字
-    public static String getTip(){
-        return tip;
-    }
-
     //断开连接
     private void dis(String unLink) {
         Log.d(TAG, "dis: " + unLink);
-        String dis = "\\[dis\\]:\\[(.*)\\]";
+        String dis = "\\[Dis\\]:(.*)";
         Pattern pattern = Pattern.compile(dis);
         Matcher matcher = pattern.matcher(unLink);
         if (matcher.find()) {
-            ChatMsgActivity.setDis(matcher.group(1));
+            ChatMsgActivity.setDis(1,matcher.group(1));
         }
     }
 
@@ -120,6 +119,25 @@ public class MsgHandle {
         }
     }
 
+    private void enter(String enter){
+        Log.d(TAG, "enter: " + enter);
+        String ent = "\\[enter\\]:(.*)";
+        Pattern pattern = Pattern.compile(ent);
+        Matcher matcher = pattern.matcher(enter);
+        if(matcher.find()){
+            ChatMsgActivity.setDis(2,matcher.group(1));
+        }
+    }
+
+    private void success(String correct){
+        String suc = "\\[correct\\]:\\[(.*)\\]";
+        Pattern pattern = Pattern.compile(suc);
+        Matcher matcher = pattern.matcher(correct);
+        if(matcher.find()){
+            setSuccess(matcher.group(1));
+        }
+    }
+
     private void setOnline(String online) {
         MsgHandle.online = online;
     }
@@ -127,5 +145,22 @@ public class MsgHandle {
     //获取在线人数
     public static String getOnline() {
         return online;
+    }
+
+    private void setTip(String tip){
+        MsgHandle.tip = tip;
+    }
+
+    //当前在线人员名字
+    public static String getTip(){
+        return tip;
+    }
+
+    private void setSuccess(String ok){
+        MsgHandle.success = ok;
+    }
+
+    public static String getSuccess(){
+        return success;
     }
 }

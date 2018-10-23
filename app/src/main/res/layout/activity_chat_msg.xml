@@ -4,18 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Faiz_gray"
     android:orientation="vertical"
     tools:context=".ChatMsgActivity">
 
     <com.hjq.bar.TitleBar
-        style="@style/TitleBarTransparentStyle"
         android:id="@+id/chat_titleBar"
+        style="@style/TitleBarTransparentStyle"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/shape_gradient"
         app:size_left="18dp"
-        app:size_title="18dp"
         app:size_right="18dp"
+        app:size_title="18dp"
         app:title="@string/welcome"
         app:title_left="@string/quit"
         app:title_right="@string/modify" />
@@ -41,26 +42,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="40dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <EditText
             android:id="@+id/et_getMsg"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
-            android:background="@color/Transparent"
+            android:background="@drawable/round_edit"
             android:inputType="none|text"
             android:padding="8dp"
+            android:textCursorDrawable="@drawable/cursor"
             android:textSize="14sp" />
 
         <Button
             android:id="@+id/btn_sendMsg"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="64dp"
-            android:layout_height="match_parent"
+            android:layout_height="35dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="4dp"
             android:background="@drawable/chat_sends" />

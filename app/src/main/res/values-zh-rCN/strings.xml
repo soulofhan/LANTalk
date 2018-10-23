@@ -13,4 +13,6 @@
     <string name="not_empty">发送内容不能为空</string>
     <string name="quit">退出</string>
     <string name="modify">修改</string>
+    <string name="again">再按一次退出</string>
+    <string name="existed">用户名已存在，请重新输入</string>
 </resources>
