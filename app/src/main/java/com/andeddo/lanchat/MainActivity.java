@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
 
-
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
@@ -45,6 +44,15 @@ public class MainActivity extends Activity {
                         mHandler.sendEmptyMessage(1);
                     }
                     break;
+                case 2:
+                    boolean wel = MsgHandle.getWel();
+                    if (wel && waitingDialog.isShowing()) {
+                        waitingDialog.dismiss();
+                        showMyDialog();
+                        MsgHandle.setWel();
+                    } else {
+                        mHandler.sendEmptyMessageDelayed(2, 1000);
+                    }
             }
         }
     };
@@ -65,9 +73,11 @@ public class MainActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btn_login:
                     //点击开始连接服务器
+                    showWaitingDialog("正在连接服务器......");
+                    SocketManager.setStatus();
                     SocketManager socketManager = new SocketManager();
                     socketManager.start();
-                    showMyDialog();
+                    mHandler.sendEmptyMessage(2);
                     break;
             }
         }
@@ -91,7 +101,7 @@ public class MainActivity extends Activity {
                     return;
                 }
                 SocketManager.sendMessage(decideName);
-                showWaitingDialog();
+                showWaitingDialog("正在登陆服务器......");
                 mHandler.sendEmptyMessage(1);
                 dialog.dismiss();
             }
@@ -100,6 +110,7 @@ public class MainActivity extends Activity {
         mAlertDialog.setNegativeButton(getXmlString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                SocketManager.sendMessage("disconnect");
                 dialog.dismiss();
             }
         });
@@ -108,14 +119,14 @@ public class MainActivity extends Activity {
         mAlertDialog.show();
     }
 
-    public void showWaitingDialog() {
+    public void showWaitingDialog(String msg) {
         /* 等待Dialog具有屏蔽其他控件的交互能力
          * @setCancelable 为使屏幕不可点击，设置为不可取消(false)
          * 下载等事件完成后，主动调用函数关闭该Dialog
          */
         waitingDialog = new ProgressDialog(MainActivity.this);
-        waitingDialog.setTitle("等待服务器连接");
-        waitingDialog.setMessage("正在连接服务器...");
+        waitingDialog.setTitle("等待服务器回应");
+        waitingDialog.setMessage(msg);
         waitingDialog.setIndeterminate(true);
         waitingDialog.setCancelable(false);
         waitingDialog.create();

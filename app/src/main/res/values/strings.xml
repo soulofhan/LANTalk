@@ -14,4 +14,5 @@
     <string name="modify">modify</string>
     <string name="again">Press again to exit</string>
     <string name="existed">Username already exists, please re-enter</string>
+    <string name="modify_Room">Modify chat room name: Stay tuned</string>
 </resources>

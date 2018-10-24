@@ -28,6 +28,7 @@ public class ChatMsgActivity extends Activity {
 
     private static TitleBar chat_titleBar;
     private static ListView lv_chatMsg;
+    private EditText et_getMsg;
 
     private ChatAdapter chatAdapter;
     ProgressDialog waitingDialog;
@@ -52,6 +53,32 @@ public class ChatMsgActivity extends Activity {
         }
     };
 
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    if (SocketManager.getLose()) {
+                        Toast.makeText(getApplicationContext(), "连接已丢失,返回主页", Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
+                    } else {
+                        mHandler.sendEmptyMessageDelayed(1, 1000);
+                    }
+                case 2:
+                    if (SocketManager.getCut()) {
+                        waitingDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "已断开与服务器的连接", Toast.LENGTH_SHORT).show();
+                        finish();
+                        break;
+                    }
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,48 +91,46 @@ public class ChatMsgActivity extends Activity {
 
                 SocketManager.sendMessage("disconnect");
                 showWaitingDialog();
-                while (true){
-                    if(SocketManager.getCut()){
-                        waitingDialog.dismiss();
-                        Toast.makeText(getApplicationContext(),"已断开与服务器的连接",Toast.LENGTH_LONG).show();
-                        finish();
-                        break;
-                    }
-                }
+                mHandler.sendEmptyMessage(2);
             }
 
             @Override
             public void onTitleClick(View v) {
-
+                Toast.makeText(getApplicationContext(), R.string.modify_Room, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRightClick(View v) {
-
+                Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.dialog), MsgHandle.getOnline()), Toast.LENGTH_SHORT).show();
             }
         });
 
         lv_chatMsg = findViewById(R.id.lv_chatMsg);
         Button btn_sendMsg = findViewById(R.id.btn_sendMsg);
-        final EditText et_getMsg = findViewById(R.id.et_getMsg);
+        et_getMsg = findViewById(R.id.et_getMsg);
 
         btn_sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
-                    Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                PersonChat personChat = new PersonChat();
-                personChat.setMeSend(true);
-                personChat.setChatMsg(et_getMsg.getText().toString());
-                personChats.add(personChat);
-                chatAdapter.notifyDataSetChanged();
-                handler.sendEmptyMessage(1);
-                SocketManager.sendMessage(et_getMsg.getText().toString());
-                et_getMsg.setText("");
+                Log.d(TAG, "onClick: ");
+                mClickListener();
             }
         });
+    }
+
+    private void mClickListener() {
+        if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
+            Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        PersonChat personChat = new PersonChat();
+        personChat.setMeSend(true);
+        personChat.setChatMsg(et_getMsg.getText().toString());
+        personChats.add(personChat);
+        chatAdapter.notifyDataSetChanged();
+        handler.sendEmptyMessage(1);
+        SocketManager.sendMessage(et_getMsg.getText().toString());
+        et_getMsg.setText("");
     }
 
     @Override
@@ -193,6 +218,7 @@ public class ChatMsgActivity extends Activity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             isFocus = true;
+            mHandler.sendEmptyMessage(1);
         }
     }
 

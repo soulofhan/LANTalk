@@ -1,6 +1,8 @@
 package com.andeddo.lanchat.unit;
 
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.andeddo.lanchat.ChatMsgActivity;
 
@@ -16,7 +18,8 @@ public class MsgHandle {
 
     private static String online = "";
     private static String tip = "";
-    private static String success="pass";
+    private static String success = "pass";
+    private static boolean WELCOME = false;
 
     /**
      * 正则表达式消息处理
@@ -47,13 +50,18 @@ public class MsgHandle {
         } else if ("decide".equals(top)) {
             msgHandle.decide(info);
 
-        }else if ("enter".equals(top)) {
+        } else if ("enter".equals(top)) {
             msgHandle.enter(info);
 
-        }else if("correct".equals(top)){
+        } else if ("correct".equals(top)) {
             msgHandle.success(info);
 
-        }else {
+        } else if ("wel".equals(top)) {
+            WELCOME = true;
+
+        } else if ("proclamation".equals(top)) {
+            msgHandle.proclamationToast(info);
+        } else {
             Log.d(TAG, "msgHandle: 52 " + info);
         }
     }
@@ -104,7 +112,7 @@ public class MsgHandle {
         Pattern pattern = Pattern.compile(dis);
         Matcher matcher = pattern.matcher(unLink);
         if (matcher.find()) {
-            ChatMsgActivity.setDis(1,matcher.group(1));
+            ChatMsgActivity.setDis(1, matcher.group(1));
         }
     }
 
@@ -119,22 +127,41 @@ public class MsgHandle {
         }
     }
 
-    private void enter(String enter){
+    //提示用户进入房间
+    private void enter(String enter) {
         Log.d(TAG, "enter: " + enter);
         String ent = "\\[enter\\]:(.*)";
         Pattern pattern = Pattern.compile(ent);
         Matcher matcher = pattern.matcher(enter);
-        if(matcher.find()){
-            ChatMsgActivity.setDis(2,matcher.group(1));
+        if (matcher.find()) {
+            ChatMsgActivity.setDis(2, matcher.group(1));
         }
     }
 
-    private void success(String correct){
+    //连接成功
+    private void success(String correct) {
         String suc = "\\[correct\\]:\\[(.*)\\]";
         Pattern pattern = Pattern.compile(suc);
         Matcher matcher = pattern.matcher(correct);
-        if(matcher.find()){
+        if (matcher.find()) {
             setSuccess(matcher.group(1));
+        }
+    }
+
+    //收到系统公告并吐司显示
+    private void proclamationToast(String proclamation) {
+        String suc = "\\[proclamation\\]:\\[(.*)\\]";
+        Pattern pattern = Pattern.compile(suc);
+        final Matcher matcher = pattern.matcher(proclamation);
+        if (matcher.find()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast.makeText(myApplication.getContext(), matcher.group(1), Toast.LENGTH_LONG).show();
+                    Looper.loop();
+                }
+            }).start();
         }
     }
 
@@ -147,20 +174,30 @@ public class MsgHandle {
         return online;
     }
 
-    private void setTip(String tip){
+    private void setTip(String tip) {
         MsgHandle.tip = tip;
     }
 
     //当前在线人员名字
-    public static String getTip(){
+    public static String getTip() {
         return tip;
     }
 
-    private void setSuccess(String ok){
+    private void setSuccess(String ok) {
         MsgHandle.success = ok;
     }
 
-    public static String getSuccess(){
+    //进入聊天室成功
+    public static String getSuccess() {
         return success;
+    }
+
+    public static void setWel() {
+        MsgHandle.WELCOME = false;
+    }
+
+    //连接服务器成功
+    public static boolean getWel() {
+        return WELCOME;
     }
 }
