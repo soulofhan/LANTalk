@@ -16,4 +16,8 @@
     <string name="again">再按一次退出</string>
     <string name="existed">用户名已存在，请重新输入</string>
     <string name="modify_Room">修改聊天室名称:敬请期待</string>
+    <string name="lost_link">连接已丢失</string>
+    <string name="response">等待服务器回应</string>
+    <string name="logging">正在登陆服务器......</string>
+    <string name="connecting">正在连接服务器......</string>
 </resources>

@@ -15,4 +15,8 @@
     <string name="again">Press again to exit</string>
     <string name="existed">Username already exists, please re-enter</string>
     <string name="modify_Room">Modify chat room name: Stay tuned</string>
+    <string name="lost_link">Connection has been lost</string>
+    <string name="response">Waiting for server response</string>
+    <string name="logging">Logging in to the server......</string>
+    <string name="connecting">Connecting to server......</string>
 </resources>

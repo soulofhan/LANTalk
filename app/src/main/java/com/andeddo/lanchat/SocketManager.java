@@ -9,8 +9,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.ConnectException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 
 public class SocketManager extends Thread {
     private static final String TAG = "SocketManager";
@@ -31,10 +33,10 @@ public class SocketManager extends Thread {
     public void run() {
         try {
             Log.d(TAG, "run: 开始链接socket服务器");
-            socket = new Socket(IPAddress, PORT);
-//            socket = new Socket();
-//            SocketAddress endpoint = new InetSocketAddress(IPAddress,PORT);
-//            socket.connect(endpoint,10000);
+//            socket = new Socket(IPAddress, PORT);
+            socket = new Socket();
+            SocketAddress endpoint = new InetSocketAddress(IPAddress,PORT);
+            socket.connect(endpoint,10000);
             if (!cut) {
                 bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
                 bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
@@ -42,25 +44,23 @@ public class SocketManager extends Thread {
                 sendMessage("1");
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    Log.d(TAG, "run: 接收到的数据为：" + line);
                     if (line.equals(disConnect)) {
                         disconnect = disConnect;
                         cut = true;
                         break;
                     } else {
                         // 将接收到的信息进行分类并显示
-                        MsgHandle.msgHandle(line);
+                        MsgHandle msgHandle = new MsgHandle(line);
+                        msgHandle.msgSort();
                     }
                 }
             }
             Log.d(TAG, "55 run: 退出消息接收阻塞...");
-        } catch (ConnectException c) {
-            Log.d(TAG, "57 连接服务器超时" + c);
+        }catch (SocketTimeoutException time){
             IPAddress = "192.168.10.129";
             PORT = 5963;
             run();
         } catch (IOException e) {
-            Log.d(TAG, "62 run: 服务器已断开" + e);
             lose = true;
             socketClose();
         } finally {
@@ -86,7 +86,6 @@ public class SocketManager extends Thread {
      * @param msg 聊天内容
      */
     public static void sendMessage(String msg) {
-        Log.d(TAG, "sendMessage: 70 " + msg);
         if (bufferedWriter != null) {
             try {
                 bufferedWriter.write(msg);

@@ -16,19 +16,22 @@ import java.util.regex.Pattern;
 public class MsgHandle {
     private static final String TAG = "MsgHandle";
 
+    private String info;
     private static String online = "";
     private static String tip = "";
     private static String success = "pass";
     private static boolean WELCOME = false;
 
+    public MsgHandle(String Msg){
+        info = Msg;
+    }
+
     /**
      * 正则表达式消息处理
      *
-     * @param info 传入接收到的需要处理的消息
      */
-    public static void msgHandle(String info) {
+    public void msgSort() {
         Log.d(TAG, "msgHandle 需要处理的数据为：" + info);
-        MsgHandle msgHandle = new MsgHandle();
         String top = "";
         String p = "\\[(.*)\\]:";
         Pattern pattern = Pattern.compile(p);
@@ -38,31 +41,34 @@ public class MsgHandle {
             Log.d(TAG, "msgHandle: 截取的报头信息：" + top);
         }
 
-        if ("Msg".equals(top)) {
-            msgHandle.msgInfo(info);
-
-        } else if ("Tip".equals(top)) {
-            msgHandle.tipInfo(info);
-
-        } else if ("Dis".equals(top)) {
-            msgHandle.dis(info);
-
-        } else if ("decide".equals(top)) {
-            msgHandle.decide(info);
-
-        } else if ("enter".equals(top)) {
-            msgHandle.enter(info);
-
-        } else if ("correct".equals(top)) {
-            msgHandle.success(info);
-
-        } else if ("wel".equals(top)) {
-            WELCOME = true;
-
-        } else if ("proclamation".equals(top)) {
-            msgHandle.proclamationToast(info);
-        } else {
-            Log.d(TAG, "msgHandle: 52 " + info);
+        switch (top) {
+            case "Msg":
+                msgInfo(info);
+                break;
+            case "Tip":
+                tipInfo(info);
+                break;
+            case "Dis":
+                dis(info);
+                break;
+            case "decide":
+                decide(info);
+                break;
+            case "enter":
+                enter(info);
+                break;
+            case "correct":
+                success(info);
+                break;
+            case "wel":
+                WELCOME = true;
+                break;
+            case "proclamation":
+                proclamationToast(info);
+                break;
+            default:
+                Log.d(TAG, "msgHandle: 52 " + info);
+                break;
         }
     }
 

@@ -2,7 +2,9 @@ package com.andeddo.lanchat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -57,22 +59,23 @@ public class ChatMsgActivity extends Activity {
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
+            int what = msg.what;
+            switch (what) {
+                case 3:
                     if (SocketManager.getLose()) {
                         Toast.makeText(getApplicationContext(), "连接已丢失,返回主页", Toast.LENGTH_SHORT).show();
                         finish();
-                        break;
                     } else {
-                        mHandler.sendEmptyMessageDelayed(1, 1000);
+                        mHandler.sendEmptyMessageDelayed(3, 1000);
                     }
-                case 2:
+                    break;
+                case 4:
                     if (SocketManager.getCut()) {
                         waitingDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "已断开与服务器的连接", Toast.LENGTH_SHORT).show();
                         finish();
-                        break;
                     }
+                    break;
                 default:
                     break;
             }
@@ -91,7 +94,7 @@ public class ChatMsgActivity extends Activity {
 
                 SocketManager.sendMessage("disconnect");
                 showWaitingDialog();
-                mHandler.sendEmptyMessage(2);
+                mHandler.sendEmptyMessage(4);
             }
 
             @Override
@@ -205,8 +208,8 @@ public class ChatMsgActivity extends Activity {
          * 下载等事件完成后，主动调用函数关闭该Dialog
          */
         waitingDialog = new ProgressDialog(ChatMsgActivity.this);
-        waitingDialog.setTitle("我是一个等待Dialog");
-        waitingDialog.setMessage("正在断开与服务器的连接");
+        waitingDialog.setTitle("退出服务器");
+        waitingDialog.setMessage("正在断开与服务器的连接......");
         waitingDialog.setIndeterminate(true);
         waitingDialog.setCancelable(false);
         waitingDialog.create();
@@ -218,13 +221,33 @@ public class ChatMsgActivity extends Activity {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             isFocus = true;
-            mHandler.sendEmptyMessage(1);
+            mHandler.sendEmptyMessage(3);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        builder.setTitle("提示：");
+        builder.setMessage("是否退出?");
+        //设置确定按钮
+        builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        //设置取消按钮
+        builder.setPositiveButton("取消",null);
+        //显示弹窗
+        builder.show();
+        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: 退出ChatMsgActivity界面");
+        chatAdapter.notifyDataSetInvalidated();
         super.onDestroy();
     }
 }
