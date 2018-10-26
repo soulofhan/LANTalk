@@ -63,7 +63,7 @@ public class ChatMsgActivity extends Activity {
             switch (what) {
                 case 3:
                     if (SocketManager.getLose()) {
-                        Toast.makeText(getApplicationContext(), "连接已丢失,返回主页", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getMsg(R.string.returnLost), Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         mHandler.sendEmptyMessageDelayed(3, 1000);
@@ -72,7 +72,7 @@ public class ChatMsgActivity extends Activity {
                 case 4:
                     if (SocketManager.getCut()) {
                         waitingDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), "已断开与服务器的连接", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getMsg(R.string.serverLost), Toast.LENGTH_SHORT).show();
                         finish();
                     }
                     break;
@@ -104,7 +104,7 @@ public class ChatMsgActivity extends Activity {
 
             @Override
             public void onRightClick(View v) {
-                Toast.makeText(getApplicationContext(), String.format(getResources().getString(R.string.dialog), MsgHandle.getOnline()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), String.format(getMsg(R.string.dialog), MsgHandle.getOnline()), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -125,7 +125,7 @@ public class ChatMsgActivity extends Activity {
 
     private void mClickListener() {
         if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
-            Toast.makeText(ChatMsgActivity.this, getResources().getString(R.string.not_empty), Toast.LENGTH_SHORT).show();
+            Toast.makeText(ChatMsgActivity.this, getMsg(R.string.not_empty), Toast.LENGTH_SHORT).show();
             return;
         }
         PersonChat personChat = new PersonChat();
@@ -203,8 +203,8 @@ public class ChatMsgActivity extends Activity {
          * 下载等事件完成后，主动调用函数关闭该Dialog
          */
         waitingDialog = new ProgressDialog(ChatMsgActivity.this);
-        waitingDialog.setTitle("退出服务器");
-        waitingDialog.setMessage("正在断开与服务器的连接......");
+        waitingDialog.setTitle(getMsg(R.string.signOut));
+        waitingDialog.setMessage(getMsg(R.string.disconnecting));
         waitingDialog.setIndeterminate(true);
         waitingDialog.setCancelable(false);
         waitingDialog.create();
@@ -223,12 +223,12 @@ public class ChatMsgActivity extends Activity {
     @Override
     public void onBackPressed() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("提示：");
-        builder.setMessage("是否退出?");
+        builder.setTitle(getMsg(R.string.tip));
+        builder.setMessage(getMsg(R.string.sureExit));
         //设置取消按钮
-        builder.setNegativeButton("取消", null);
+        builder.setNegativeButton(getMsg(R.string.cancel), null);
         //设置确定按钮
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getMsg(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SocketManager.sendMessage("disconnect");
@@ -239,6 +239,10 @@ public class ChatMsgActivity extends Activity {
         });
         //显示弹窗
         builder.show();
+    }
+
+    private String getMsg(int stringId) {
+        return getResources().getString(stringId);
     }
 
     @Override

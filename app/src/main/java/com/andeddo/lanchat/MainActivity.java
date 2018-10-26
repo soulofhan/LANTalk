@@ -29,7 +29,8 @@ public class MainActivity extends Activity {
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(Message msg) {            // TODO Auto-generated method stub
+        public void handleMessage(Message msg) {
+            // TODO Auto-generated method stub
             int what = msg.what;
             switch (what) {
                 case 1:
@@ -86,8 +87,8 @@ public class MainActivity extends Activity {
                 case R.id.btn_login:
                     //点击开始连接服务器
                     showWaitingDialog("正在连接服务器......");
-                    SocketManager.setStatus();
                     SocketManager socketManager = new SocketManager();
+                    socketManager.setStatus();
                     socketManager.start();
                     mHandler.sendEmptyMessage(2);
                     break;

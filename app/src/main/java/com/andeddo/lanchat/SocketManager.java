@@ -96,7 +96,7 @@ public class SocketManager extends Thread {
         }
     }
 
-    public static void setStatus(){
+    public void setStatus(){
         cut = false;
         lose = false;
     }

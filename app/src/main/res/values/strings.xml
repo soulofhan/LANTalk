@@ -19,4 +19,11 @@
     <string name="response">Waiting for server response</string>
     <string name="logging">Logging in to the server......</string>
     <string name="connecting">Connecting to server......</string>
+    <string name="signOut">Sign out</string>
+    <string name="disconnecting">Disconnecting from the server......</string>
+    <string name="tip">prompt:</string>
+    <string name="sureExit">confirm exit?</string>
+    <string name="online">online:</string>
+    <string name="returnLost">The connection has been lost, return to the home page</string>
+    <string name="serverLost">The connection to the server has been disconnected</string>
 </resources>

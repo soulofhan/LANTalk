@@ -20,4 +20,11 @@
     <string name="response">等待服务器回应</string>
     <string name="logging">正在登陆服务器......</string>
     <string name="connecting">正在连接服务器......</string>
+    <string name="signOut">登出</string>
+    <string name="disconnecting">正在断开与服务器的连接......</string>
+    <string name="tip">提示：</string>
+    <string name="sureExit">确认退出？</string>
+    <string name="online">在线:</string>
+    <string name="returnLost">连接已丢失,返回主页</string>
+    <string name="serverLost">已断开与服务器的连接</string>
 </resources>
