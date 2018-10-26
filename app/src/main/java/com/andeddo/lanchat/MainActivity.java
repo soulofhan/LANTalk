@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity {
     Dialog dialog;
     long firstPressedTime = 0;
     ProgressDialog waitingDialog;
+    private boolean isFocus = true;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -56,12 +58,15 @@ public class MainActivity extends Activity {
                     }
                     break;
                 case 3:
+                    Log.d(TAG, "handleMessage: MainActivity");
                     //检测服务器连接是否存在
                     if (SocketManager.getLose()) {
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), getMsg(R.string.lost_link), Toast.LENGTH_SHORT).show();
                     } else {
-                        mHandler.sendEmptyMessageDelayed(3, 1000);
+                        if (isFocus) {
+                            mHandler.sendEmptyMessageDelayed(3, 1000);
+                        }
                     }
                     break;
                 default:
@@ -86,7 +91,8 @@ public class MainActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btn_login:
                     //点击开始连接服务器
-                    showWaitingDialog("正在连接服务器......");
+                    isFocus = true;
+                    showWaitingDialog(getMsg(R.string.connecting));
                     SocketManager socketManager = new SocketManager();
                     socketManager.setStatus();
                     socketManager.start();
@@ -116,6 +122,7 @@ public class MainActivity extends Activity {
                 SocketManager.sendMessage(decideName);
                 showWaitingDialog(getMsg(R.string.logging));
                 mHandler.sendEmptyMessage(1);
+                isFocus = false; //取消handle检测掉线
                 dialog.dismiss();
             }
         });

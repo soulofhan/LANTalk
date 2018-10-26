@@ -65,6 +65,7 @@ public class ChatMsgActivity extends Activity {
                     if (SocketManager.getLose()) {
                         Toast.makeText(getApplicationContext(), getMsg(R.string.returnLost), Toast.LENGTH_SHORT).show();
                         finish();
+                        break;
                     } else {
                         mHandler.sendEmptyMessageDelayed(3, 1000);
                     }
