@@ -111,6 +111,8 @@ public class ChatMsgActivity extends Activity {
         lv_chatMsg = findViewById(R.id.lv_chatMsg);
         Button btn_sendMsg = findViewById(R.id.btn_sendMsg);
         et_getMsg = findViewById(R.id.et_getMsg);
+        chatAdapter = new ChatAdapter(this, personChats);
+        lv_chatMsg.setAdapter(chatAdapter);
 
         btn_sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,13 +136,6 @@ public class ChatMsgActivity extends Activity {
         handler.sendEmptyMessage(1);
         SocketManager.sendMessage(et_getMsg.getText().toString());
         et_getMsg.setText("");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        chatAdapter = new ChatAdapter(this, personChats);
-        lv_chatMsg.setAdapter(chatAdapter);
     }
 
     /**
@@ -227,27 +222,29 @@ public class ChatMsgActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("提示：");
         builder.setMessage("是否退出?");
+        //设置取消按钮
+        builder.setNegativeButton("取消", null);
         //设置确定按钮
-        builder.setNegativeButton("确定", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                finish();
+                SocketManager.sendMessage("disconnect");
+                showWaitingDialog();
+                dialog.dismiss();
+                mHandler.sendEmptyMessage(4);
             }
         });
-        //设置取消按钮
-        builder.setPositiveButton("取消",null);
         //显示弹窗
         builder.show();
-        super.onBackPressed();
     }
 
     @Override
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: 退出ChatMsgActivity界面");
-        chatAdapter.notifyDataSetInvalidated();
+        personChats.clear();
         super.onDestroy();
     }
 }

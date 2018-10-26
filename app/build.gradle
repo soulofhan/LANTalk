@@ -1,10 +1,13 @@
 apply plugin: 'com.android.application'
 
+//true 为正式版本 false 为调试版本
 ext.debug = false
 ext.majorNumber = 1
 ext.minorNumber = 0
+//git 获取当前分支commit次数
 ext.revisionNumberCMD = 'git rev-list HEAD --count'
 ext.revisionNumber = revisionNumberCMD.execute().getText().trim().toInteger()
+//git最后一次commit识别码后六位
 ext.revisionDescriptionCMD = 'git describe --always'
 ext.tempRevisionDescription = revisionDescriptionCMD.execute().getText().trim()
 ext.revisionDescription = (tempRevisionDescription == null || (tempRevisionDescription).size() == 0) ?
@@ -15,7 +18,6 @@ android {
         applicationId "com.andeddo.lanchat"
         minSdkVersion 22
         targetSdkVersion 26
-        //true 为正式版本 false 为调试版本
         versionCode getVersionCode(debug)
         versionName getVersionName(debug)
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -26,6 +28,22 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                outputFileName = defaultConfig.applicationId.subSequence(
+                        defaultConfig.applicationId.lastIndexOf(".") + 1,
+                        defaultConfig.applicationId.length()) + "-v" +
+                        defaultConfig.versionCode +
+                        "." + releaseTime() + "-" + output.baseName + ".apk"
+            }
+        }
+    }
+}
+
+static def releaseTime() {
+    return new Date().format("HHmmss", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {
@@ -41,24 +59,22 @@ dependencies {
 
 //获取编译版本号
 def getVersionCode(boolean isRelease) {
-    // 正式环境
     if (isRelease) {
+        // 正式环境
         majorNumber * 1000000 + minorNumber * 10000 + revisionNumber
-    }
-    // debug环境
-    else {
+    } else {
+        // debug环境
         Integer.parseInt(new Date().format("yyMMddHHmm"))
     }
 }
 
 //获取编译版本名称
 def getVersionName(boolean isRelease) {
-    // 正式环境
     if (isRelease) {
+        // 正式环境
         majorNumber + "." + minorNumber + "." + revisionNumber + "." + revisionDescription
-    }
-    // debug环境
-    else {
+    } else {
+        // debug环境
         String today = new Date().format("yyMMdd")
         String time = new Date().format("HHmmss")
         majorNumber + "." + minorNumber + "." + revisionNumber + ".$today.$time." + revisionDescription
