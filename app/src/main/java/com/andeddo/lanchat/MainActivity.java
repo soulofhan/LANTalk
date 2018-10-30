@@ -48,11 +48,13 @@ public class MainActivity extends Activity {
                     }
                     break;
                 case 2:
-                    boolean wel = MsgHandle.getWel();
-                    if (wel && waitingDialog.isShowing()) {
+                    if (MsgHandle.getWel() && waitingDialog.isShowing()) {
                         waitingDialog.dismiss();
                         showMyDialog();
                         MsgHandle.setWel();
+                    } else if ("unKnow".equals(MsgHandle.getSuccess())) {
+                        waitingDialog.dismiss();
+                        Toast.makeText(MainActivity.this, "连接服务器失败,请稍后重试", Toast.LENGTH_SHORT).show();
                     } else {
                         mHandler.sendEmptyMessageDelayed(2, 1000);
                     }
@@ -92,8 +94,10 @@ public class MainActivity extends Activity {
                 case R.id.btn_login:
                     //点击开始连接服务器
                     isFocus = true;
+                    MsgHandle.setSuccess("pass");
                     showWaitingDialog(getMsg(R.string.connecting));
                     SocketManager socketManager = new SocketManager();
+                    socketManager.setHost("192.168.10.129");
                     socketManager.setStatus();
                     socketManager.start();
                     mHandler.sendEmptyMessage(2);
@@ -131,6 +135,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SocketManager.sendMessage("disconnect");
+                isFocus = false; //取消handle检测掉线
                 dialog.dismiss();
             }
         });

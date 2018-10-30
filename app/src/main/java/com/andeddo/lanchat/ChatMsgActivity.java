@@ -92,10 +92,7 @@ public class ChatMsgActivity extends Activity {
         chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
             public void onLeftClick(View v) {
-
-                SocketManager.sendMessage("disconnect");
-                showWaitingDialog();
-                mHandler.sendEmptyMessage(4);
+                exitDialog();
             }
 
             @Override
@@ -223,8 +220,13 @@ public class ChatMsgActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        exitDialog();
+    }
+
+    private void exitDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getMsg(R.string.tip));
+        builder.setIcon(R.mipmap.ic_launcher_round);
         builder.setMessage(getMsg(R.string.sureExit));
         //设置取消按钮
         builder.setNegativeButton(getMsg(R.string.cancel), null);

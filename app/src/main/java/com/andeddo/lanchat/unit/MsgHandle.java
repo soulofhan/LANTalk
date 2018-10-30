@@ -189,7 +189,7 @@ public class MsgHandle {
         return tip;
     }
 
-    private void setSuccess(String ok) {
+    public static void setSuccess(String ok) {
         MsgHandle.success = ok;
     }
 
