@@ -62,15 +62,21 @@ class ChatAdapter extends BaseAdapter {
         if(holderView == null) {
             holderView = new HolderView();
             if(isMeSend) {
+                //显示自己发送
                 convertView = View.inflate(context,R.layout.chat_dialog_right_item,null);
-                holderView.tv_chat_me_message = convertView.findViewById(R.id.tv_chat_me_message);
-                holderView.tv_chat_me_message.setText(entity.getChatMsg());
+                holderView.tv_me_name = convertView.findViewById(R.id.tv_me_name);   //绑定发送昵称TextView
+                holderView.tv_chat_me_message = convertView.findViewById(R.id.tv_chat_me_message);  //绑定消息显示TextView
+                holderView.tv_me_name.setText(entity.getName());        //显示昵称
+                holderView.tv_chat_me_message.setText(entity.getChatMsg());     //显示消息
             } else {
+                //显示接收消息
                 convertView = View.inflate(context,R.layout.chat_dialog_left_item,null);
-                holderView.tv_chat_message = convertView.findViewById(R.id.tv_chat_message);
-                holderView.tv_chat_message.setText(entity.getChatMsg());
+//                holderView.tv_name = convertView.findViewById(R.id.tv_name);        //绑定接收昵称TextView
+                holderView.tv_chat_message = convertView.findViewById(R.id.tv_chat_message);        //绑定消息显示TextView
+                holderView.tv_chat_message.setText(entity.getChatMsg());        //显示消息
             }
             if(isTip){
+                //显示提示信息
                 convertView = View.inflate(context,R.layout.chat_dialog_tip_item,null);
                 holderView.tv_tip = convertView.findViewById(R.id.tv_chat_tip);
                 holderView.tv_tip.setText(entity.getChatMsg());
@@ -83,6 +89,8 @@ class ChatAdapter extends BaseAdapter {
     }
 
     class HolderView {
+        TextView tv_me_name;
+        TextView tv_name;
         TextView tv_chat_me_message;    //绑定自己发送文本框
         TextView tv_chat_message;       //绑定非自己发送文本框
         TextView tv_tip;                //绑定提示语

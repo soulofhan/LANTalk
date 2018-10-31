@@ -39,6 +39,7 @@ public class MainActivity extends Activity {
                     if ("success".equals(MsgHandle.getSuccess())) {
                         waitingDialog.dismiss();
                         Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
+                        intent.putExtra("decideName",msg.getData().getString("name"));
                         startActivity(intent);
                     } else if ("failure".equals(MsgHandle.getSuccess())) {
                         waitingDialog.dismiss();
@@ -125,7 +126,14 @@ public class MainActivity extends Activity {
                 }
                 SocketManager.sendMessage(decideName);
                 showWaitingDialog(getMsg(R.string.logging));
-                mHandler.sendEmptyMessage(1);
+
+                Message msg = new Message();
+                msg.what = 1;
+                Bundle bundle = new Bundle();
+                bundle.putString("name", decideName);  //往Bundle中存放数据
+                msg.setData(bundle);//mes利用Bundle传递数据
+                mHandler.sendMessage(msg);
+
                 isFocus = false; //取消handle检测掉线
                 dialog.dismiss();
             }

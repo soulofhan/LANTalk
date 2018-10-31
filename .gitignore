@@ -10,6 +10,7 @@
 # Gradle files
 .gradle/
 .idea/
+LANTalk.iml
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -22,13 +23,6 @@
 *.zip
 *.tar.gz
 *.rar
-
-# .iml
-app.iml
-LANTalk.iml
-
-#.properties
-local.properties
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*

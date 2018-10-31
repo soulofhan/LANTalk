@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,9 +33,13 @@ public class ChatMsgActivity extends Activity {
     private static ListView lv_chatMsg;
     private EditText et_getMsg;
 
+    private String myName;
+
     private ChatAdapter chatAdapter;
     ProgressDialog waitingDialog;
     private static List<PersonChat> personChats = new ArrayList<PersonChat>();
+
+    static SoundPoolManager soundPoolManager;
 
     @SuppressLint("HandlerLeak")
     private static Handler handler = new Handler() {
@@ -88,6 +93,10 @@ public class ChatMsgActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_msg);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
+        Intent intent = getIntent();
+        myName = intent.getStringExtra("decideName");   //获取自己的昵称,用于显示
+
+        soundPoolManager = SoundPoolManager.getInstance(ChatMsgActivity.this);
         chat_titleBar = findViewById(R.id.chat_titleBar);
         chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
@@ -121,17 +130,20 @@ public class ChatMsgActivity extends Activity {
         });
     }
 
+    //发送消息
     private void mClickListener() {
         if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
             Toast.makeText(ChatMsgActivity.this, getMsg(R.string.not_empty), Toast.LENGTH_SHORT).show();
             return;
         }
         PersonChat personChat = new PersonChat();
+        personChat.setName(myName);
         personChat.setMeSend(true);
         personChat.setChatMsg(et_getMsg.getText().toString());
         personChats.add(personChat);
         chatAdapter.notifyDataSetChanged();
         handler.sendEmptyMessage(1);
+        soundPoolManager.playSingle(SoundPoolManager.SEND);
         SocketManager.sendMessage(et_getMsg.getText().toString());
         et_getMsg.setText("");
     }
@@ -149,6 +161,7 @@ public class ChatMsgActivity extends Activity {
         personChat.setName(name);
         personChat.setChatMsg(getMsg);
         personChats.add(personChat);
+        soundPoolManager.playSingle(SoundPoolManager.LOAD);
         handler.sendEmptyMessage(1);
     }
 
