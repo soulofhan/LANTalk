@@ -121,13 +121,10 @@ public class SocketManager extends Thread {
         }
     }
 
-    public void setHost(String HOST){
-        IPAddress = HOST;
-    }
-
-    public void setStatus() {
+    public void setStatus(String HOST) {
         cut = false;
         lose = false;
+        IPAddress = HOST;
     }
 
     public static boolean getCut() {

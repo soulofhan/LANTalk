@@ -36,12 +36,12 @@ public class MainActivity extends Activity {
             int what = msg.what;
             switch (what) {
                 case 1:
-                    if ("success".equals(MsgHandle.getSuccess())) {
+                    if ("success".equals(MsgHandle.getSuccess())) {     //成功初始化昵称
                         waitingDialog.dismiss();
                         Intent intent = new Intent(MainActivity.this, ChatMsgActivity.class);
-                        intent.putExtra("decideName",msg.getData().getString("name"));
+                        intent.putExtra("decideName", msg.getData().getString("name"));
                         startActivity(intent);
-                    } else if ("failure".equals(MsgHandle.getSuccess())) {
+                    } else if ("failure".equals(MsgHandle.getSuccess())) {      //昵称已存在
                         waitingDialog.dismiss();
                         Toast.makeText(MainActivity.this, getMsg(R.string.existed), Toast.LENGTH_SHORT).show();
                     } else {
@@ -49,25 +49,24 @@ public class MainActivity extends Activity {
                     }
                     break;
                 case 2:
-                    if (MsgHandle.getWel() && waitingDialog.isShowing()) {
+                    if (MsgHandle.getWel() && waitingDialog.isShowing()) {      //成功连接服务器
                         waitingDialog.dismiss();
                         showMyDialog();
                         MsgHandle.setWel();
-                    } else if ("unKnow".equals(MsgHandle.getSuccess())) {
+                    } else if ("unKnow".equals(MsgHandle.getSuccess()) && waitingDialog.isShowing()) {       //连接服务器失败
                         waitingDialog.dismiss();
-                        Toast.makeText(MainActivity.this, "连接服务器失败,请稍后重试", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, getMsg(R.string.try_again), Toast.LENGTH_SHORT).show();
                     } else {
                         mHandler.sendEmptyMessageDelayed(2, 1000);
                     }
                     break;
                 case 3:
-                    Log.d(TAG, "handleMessage: MainActivity");
                     //检测服务器连接是否存在
                     if (SocketManager.getLose()) {
                         dialog.dismiss();
                         Toast.makeText(getApplicationContext(), getMsg(R.string.lost_link), Toast.LENGTH_SHORT).show();
                     } else {
-                        if (isFocus) {
+                        if (isFocus) {      //当前页面是否获取焦点
                             mHandler.sendEmptyMessageDelayed(3, 1000);
                         }
                     }
@@ -98,8 +97,7 @@ public class MainActivity extends Activity {
                     MsgHandle.setSuccess("pass");
                     showWaitingDialog(getMsg(R.string.connecting));
                     SocketManager socketManager = new SocketManager();
-                    socketManager.setHost("192.168.10.129");
-                    socketManager.setStatus();
+                    socketManager.setStatus("192.168.10.129");
                     socketManager.start();
                     mHandler.sendEmptyMessage(2);
                     break;

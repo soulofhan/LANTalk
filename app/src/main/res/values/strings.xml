@@ -26,4 +26,5 @@
     <string name="online">online:</string>
     <string name="returnLost">The connection has been lost, return to the home page</string>
     <string name="serverLost">The connection to the server has been disconnected</string>
+    <string name="try_again">Connection to server failed, please try again later</string>
 </resources>

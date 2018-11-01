@@ -27,4 +27,5 @@
     <string name="online">在线:</string>
     <string name="returnLost">连接已丢失,返回主页</string>
     <string name="serverLost">已断开与服务器的连接</string>
+    <string name="try_again">连接服务器失败,请稍后重试</string>
 </resources>

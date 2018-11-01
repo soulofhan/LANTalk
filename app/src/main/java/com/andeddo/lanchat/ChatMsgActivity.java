@@ -101,7 +101,7 @@ public class ChatMsgActivity extends Activity {
         chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
             public void onLeftClick(View v) {
-                exitDialog();
+                exitDialog();   //确认退出弹窗
             }
 
             @Override
