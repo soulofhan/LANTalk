@@ -71,8 +71,9 @@ class ChatAdapter extends BaseAdapter {
             } else {
                 //显示接收消息
                 convertView = View.inflate(context,R.layout.chat_dialog_left_item,null);
-//                holderView.tv_name = convertView.findViewById(R.id.tv_name);        //绑定接收昵称TextView
+                holderView.tv_name = convertView.findViewById(R.id.tv_name);        //绑定接收昵称TextView
                 holderView.tv_chat_message = convertView.findViewById(R.id.tv_chat_message);        //绑定消息显示TextView
+                holderView.tv_name.setText(entity.getName());
                 holderView.tv_chat_message.setText(entity.getChatMsg());        //显示消息
             }
             if(isTip){
