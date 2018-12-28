@@ -33,13 +33,13 @@ public class ChatMsgActivity extends Activity {
     private static ListView lv_chatMsg;
     private EditText et_getMsg;
 
-    private String myName;
+    private String myName;      //用于显示自己昵称
 
     private ChatAdapter chatAdapter;
     ProgressDialog waitingDialog;
     private static List<PersonChat> personChats = new ArrayList<PersonChat>();
 
-    static SoundPoolManager soundPoolManager;
+    static SoundPoolManager soundPoolManager;       //定义音效播放器
 
     @SuppressLint("HandlerLeak")
     private static Handler handler = new Handler() {
@@ -96,7 +96,7 @@ public class ChatMsgActivity extends Activity {
         Intent intent = getIntent();
         myName = intent.getStringExtra("decideName");   //获取自己的昵称,用于显示
 
-        soundPoolManager = SoundPoolManager.getInstance(ChatMsgActivity.this);
+        soundPoolManager = SoundPoolManager.getInstance(ChatMsgActivity.this);      //初始化音效播放器
         chat_titleBar = findViewById(R.id.chat_titleBar);
         chat_titleBar.setOnTitleBarListener(new OnTitleBarListener() {
             @Override
@@ -106,7 +106,7 @@ public class ChatMsgActivity extends Activity {
 
             @Override
             public void onTitleClick(View v) {
-                Toast.makeText(getApplicationContext(), R.string.modify_Room, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(), R.string.modify_Room, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -124,22 +124,18 @@ public class ChatMsgActivity extends Activity {
         btn_sendMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: ");
-                mClickListener();
+                if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
+                    Toast.makeText(ChatMsgActivity.this, getMsg(R.string.not_empty), Toast.LENGTH_SHORT).show();
+                }else{
+                    mClickListener(et_getMsg.getText().toString());
+                }
             }
         });
     }
 
     //发送消息
-    private void mClickListener() {
-        if (TextUtils.isEmpty(et_getMsg.getText().toString())) {
-            Toast.makeText(ChatMsgActivity.this, getMsg(R.string.not_empty), Toast.LENGTH_SHORT).show();
-            return;
-        }
-        PersonChat personChat = new PersonChat();
-        personChat.setName(myName);
-        personChat.setMeSend(true);
-        personChat.setChatMsg(et_getMsg.getText().toString());
+    private void mClickListener(String getMsg) {
+        PersonChat personChat = new PersonChat(0,myName,getMsg,true);
         personChats.add(personChat);
         chatAdapter.notifyDataSetChanged();
         handler.sendEmptyMessage(1);
@@ -155,11 +151,7 @@ public class ChatMsgActivity extends Activity {
      * @param getMsg 传入收到的聊天内容
      */
     public static void setMsg(String name, String getMsg) {
-        Log.d(TAG, "setMsg: 84");
-        PersonChat personChat = new PersonChat();
-        personChat.setMeSend(false);
-        personChat.setName(name);
-        personChat.setChatMsg(getMsg);
+        PersonChat personChat = new PersonChat(0,name,getMsg,false);
         personChats.add(personChat);
         soundPoolManager.playSingle(SoundPoolManager.LOAD);
         handler.sendEmptyMessage(1);

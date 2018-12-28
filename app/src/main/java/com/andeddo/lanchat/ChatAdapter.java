@@ -1,7 +1,6 @@
 package com.andeddo.lanchat;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import java.util.List;
 
 class ChatAdapter extends BaseAdapter {
-    private static final String TAG = "ChatAdapter";
     private Context context;
     private List<PersonChat> lists;
 
@@ -85,7 +83,6 @@ class ChatAdapter extends BaseAdapter {
         } else {
             holderView = (HolderView) convertView.getTag();
         }
-        Log.d(TAG, "getView: "+convertView);
         return convertView;
     }
 
