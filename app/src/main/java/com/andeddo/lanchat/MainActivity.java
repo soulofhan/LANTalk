@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +19,7 @@ import android.widget.Toast;
 
 import com.andeddo.lanchat.unit.MsgHandle;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ChatMsgActivityView{
     private static final String TAG = "MainActivity";
 
     Dialog dialog;
@@ -44,6 +43,7 @@ public class MainActivity extends Activity {
                     } else if ("failure".equals(MsgHandle.getSuccess())) {      //昵称已存在
                         waitingDialog.dismiss();
                         Toast.makeText(MainActivity.this, getMsg(R.string.existed), Toast.LENGTH_SHORT).show();
+                        showMyDialog();
                     } else {
                         mHandler.sendEmptyMessage(1);
                     }
@@ -71,6 +71,13 @@ public class MainActivity extends Activity {
                         }
                     }
                     break;
+                case 4:
+                    dialog.dismiss();
+                    int id = R.string.time_out;
+                    if(!isFocus){
+                        id = R.string.cancel_click;
+                    }
+                    Toast.makeText(MainActivity.this, getMsg(id), Toast.LENGTH_SHORT).show();
                 default:
                     break;
             }
@@ -97,7 +104,8 @@ public class MainActivity extends Activity {
                     MsgHandle.setSuccess("pass");
                     showWaitingDialog(getMsg(R.string.connecting));
                     SocketManager socketManager = new SocketManager();
-                    socketManager.setStatus("192.168.10.129");
+//                    socketManager.setStatus("3s.net579.com");
+                    socketManager.setStatus("6s.net579.com",MainActivity.this);
                     socketManager.start();
                     mHandler.sendEmptyMessage(2);
                     break;
@@ -188,5 +196,10 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public void mHandle() {
+        mHandler.sendEmptyMessage(4);   //超时或取消登录
     }
 }

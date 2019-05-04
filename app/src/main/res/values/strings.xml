@@ -13,6 +13,8 @@
     <string name="quit">quit</string>
     <string name="modify">modify</string>
     <string name="again">Press again to exit</string>
+    <string name="time_out">Nickname initialization timeout</string>
+    <string name="cancel_click">Cancel login</string>
     <string name="existed">Username already exists, please re-enter</string>
     <string name="modify_Room">Modify chat room name: Stay tuned</string>
     <string name="lost_link">Connection has been lost</string>

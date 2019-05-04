@@ -25,7 +25,7 @@ import com.hjq.bar.TitleBar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatMsgActivity extends Activity {
+public class ChatMsgActivity extends Activity implements ChatMsgActivityView{
     private static final String TAG = "ChatMsgActivity";
     private static boolean isFocus = false;
 
@@ -76,6 +76,7 @@ public class ChatMsgActivity extends Activity {
                     }
                     break;
                 case 4:
+                    showWaitingDialog();
                     if (SocketManager.getCut()) {
                         waitingDialog.dismiss();
                         Toast.makeText(getApplicationContext(), getMsg(R.string.serverLost), Toast.LENGTH_SHORT).show();
@@ -93,6 +94,7 @@ public class ChatMsgActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_msg);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); //显示状态栏
+        SocketManager.setView(this);        //将view传入子线程中，方便子线程调用本class函数
         Intent intent = getIntent();
         myName = intent.getStringExtra("decideName");   //获取自己的昵称,用于显示
 
@@ -240,9 +242,7 @@ public class ChatMsgActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 SocketManager.sendMessage("disconnect");
-                showWaitingDialog();
                 dialog.dismiss();
-                mHandler.sendEmptyMessage(4);
             }
         });
         //显示弹窗
@@ -258,5 +258,10 @@ public class ChatMsgActivity extends Activity {
         Log.d(TAG, "onDestroy: 退出ChatMsgActivity界面");
         personChats.clear();
         super.onDestroy();
+    }
+
+    @Override
+    public void mHandle() {
+        mHandler.sendEmptyMessage(4);
     }
 }
